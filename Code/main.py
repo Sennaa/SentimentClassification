@@ -7,6 +7,7 @@ Created on Sat Mar 31 14:15:23 2018
 
 import numpy as np
 import pandas as pd
+import sys
 from sklearn.model_selection import train_test_split
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.naive_bayes import GaussianNB
@@ -23,7 +24,7 @@ def load_data(path, train, test):
 
 def create_tfidf(sentences):
     print("    Create tfidf...")
-    vectorizer = TfidfVectorizer(ngram_range=(1,2), stop_words='english', lowercase=True, min_df = 0.01)
+    vectorizer = TfidfVectorizer(ngram_range=(1,2), stop_words='english', lowercase=True)
     tfidf = vectorizer.fit(sentences)
     return(tfidf)
 
@@ -54,6 +55,7 @@ def predict(clf, data):
     print("  Make predictions...")
     predictions = clf.predict(data)
     predictions = np.array(predictions)
+    print(predictions)
     return(predictions)
 
 def save_predictions(predictions, filepath = "../predictions/predictions.csv"):
@@ -61,16 +63,18 @@ def save_predictions(predictions, filepath = "../predictions/predictions.csv"):
     predictions = pd.DataFrame(predictions)
     predictions.to_csv(filepath, header="Predictions", index=False)
 
-def sentiment_classification(train, path = "../Data/", trainfile = "traindata.txt", testfile = "testdata.txt"):
+def sentiment_classification(testsentence, train = False, path = "../Data/", trainfile = "traindata.txt", testfile = "testdata.txt"):
     print("Sentiment Classification")
+    print(testsentence)
+    testsentence    = [testsentence]
     train_sentences, train_labels, test_sentences = load_data(path, trainfile, testfile)
     tfidf           = create_tfidf(train_sentences)
     train_tfidf     = preprocess(tfidf, train_sentences)
     clf             = train_classifier(train, train_tfidf, train_labels)
     if (not train):
-        test_tfidf  = preprocess(tfidf, test_sentences)
+        test_tfidf  = preprocess(tfidf, testsentence)
         predictions = predict(clf, test_tfidf)
-        save_predictions(predictions)
+        #save_predictions(predictions)
     
 if __name__ == '__main__':
-    sentiment_classification(True)
+    sentiment_classification(sys.argv[1])
