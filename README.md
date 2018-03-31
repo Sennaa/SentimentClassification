@@ -3,6 +3,8 @@ Based on data of in-class contest by University of Michigan SI650 (https://www.k
 
 To run, use python 3.
 Run in command line as follows:
-python main.py "place your own sentence here"
+1. Go to folder "Code"
+2. To run:
+    python main.py "place your own sentence here"
 
 Output: 1 = positive, 0 = negative
